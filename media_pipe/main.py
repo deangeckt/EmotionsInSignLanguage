@@ -26,4 +26,4 @@ def extract_from_file(full_path):
     cv2.destroyAllWindows()
 
 
-extract_from_file('../../video/עצב02.mp4')
+extract_from_file('<FILL>')
