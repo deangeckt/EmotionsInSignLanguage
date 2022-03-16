@@ -73,6 +73,7 @@ docs/_build/
 
 # PyBuilder
 target/
+open_face/processed
 
 # Jupyter Notebook
 .ipynb_checkpoints
