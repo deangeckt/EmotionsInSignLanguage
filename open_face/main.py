@@ -2,19 +2,13 @@ import pandas as pd
 import os
 from collections import defaultdict
 import numpy as np
-
+import matplotlib.pyplot as plt
+from FacialEmotion.open_face.au_events import AuEvents, au_list
 
 raw_data_path = 'raw_data/'
 
-au_list = ['AU01_r', 'AU02_r', 'AU04_r', 'AU05_r', 'AU06_r', 'AU07_r', 'AU09_r', 'AU10_r',
-           'AU12_r', 'AU15_r', 'AU17_r', 'AU01_c', 'AU02_c', 'AU04_c', 'AU05_c', 'AU06_c', 'AU07_c',
-           'AU09_c', 'AU10_c', 'AU12_c', 'AU14_c', 'AU15_c', 'AU17_c', 'AU28_c']
 
-intensity_threshold = 0
-binary_threshold = 0
-
-
-def extrac_file(file_path, au_res):
+def extract_file(file_path, au_res, label, person):
     df = pd.read_csv(file_path)
     df = df.rename(columns=lambda x: x.strip())
     df = df[au_list]
@@ -23,14 +17,24 @@ def extrac_file(file_path, au_res):
         au_res[au]['mean'].append(df[au].mean())
         au_res[au]['std'].append(df[au].std())
 
+        events = AuEvents(au, label, person)
+        e1, e2, e3 = events.process(np.array(df[au]))
+        events.plot_events()
+
+        au_res[au]['e1'].append(e1)
+        au_res[au]['e2'].append(e2)
+        au_res[au]['e3'].append(e3)
+
 
 result_df = pd.DataFrame(columns=['label', 'au', 'mean', 'std'])
-res = defaultdict(lambda: defaultdict(lambda: {'mean': [], 'std': []}))
+res = defaultdict(
+    lambda: defaultdict(lambda: {'mean': [], 'std': [], 'e1': [], 'e2': [], 'e3': []}))
 
 for file_name in os.listdir(raw_data_path):
     person = file_name.split('_')[0]
     label = file_name.split('_')[1]
-    extrac_file(os.path.join(raw_data_path, file_name), res[label])
+    if label == 'fear':
+        extract_file(os.path.join(raw_data_path, file_name), res[label], label, person)
 
 for label in res:
     for au in res[label]:
