@@ -28,18 +28,31 @@ class AuEvents:
         self.dy_au_th = None
         self.au = None
         self.segments = None
+        self.segments_len = None
 
         self.start_idx = -1
         self.end_idx = -1
 
     def __add_event(self, segment_idx):
-        self.events[segment_idx].append({'s': self.start_idx, 'e': self.end_idx})
+        # validate event length
+        if self.end_idx - self.start_idx < self.min_wd:
+            return
+
+        idx_offset = sum(self.segments_len[0:segment_idx])
+        in_seg_strat = self.start_idx - idx_offset
+        in_seg_end = self.end_idx - idx_offset
+
+        intensity = np.mean(self.segments[segment_idx][in_seg_strat:in_seg_end])
+        self.events[segment_idx].append({'s': self.start_idx,
+                                         'e': self.end_idx,
+                                         'i': intensity})
         self.start_idx = -1
         self.end_idx = -1
 
     def __segment_event(self, segment, segment_idx):
-        segments_len = [len(s) for s in self.segments]
-        idx_offset = sum(segments_len[0:segment_idx])
+        idx_offset = sum(self.segments_len[0:segment_idx])
+        self.start_idx = -1
+        self.end_idx = -1
 
         for idx, v in enumerate(segment):
             frame_idx = idx + idx_offset
@@ -48,10 +61,13 @@ class AuEvents:
                     self.start_idx = frame_idx
             else:
                 if self.start_idx != -1:
-                    curr_len = frame_idx - self.start_idx
-                    if curr_len > self.min_wd:
-                        self.end_idx = frame_idx
-                        self.__add_event(segment_idx)
+                    self.end_idx = frame_idx
+                    self.__add_event(segment_idx)
+
+        # segment ended during an event
+        if self.start_idx != -1:
+            self.end_idx = len(segment) - 1 + idx_offset
+            self.__add_event(segment_idx)
 
     def plot_events(self):
         if self.is_bin_au:
@@ -75,8 +91,8 @@ class AuEvents:
         title = f"{self.vid_id}-{self.au_id}"
         plt.title(title)
 
-        # plt.show()
-        plt.savefig(f"events_plots/{title}.png")
+        plt.show()
+        # plt.savefig(f"events_plots/{title}.png")
         plt.close(fig)
 
     def process(self, au: np.ndarray):
@@ -86,8 +102,14 @@ class AuEvents:
 
         self.dy_au_th = np.mean(self.au) * self.au_th_fix
         self.segments = np.array_split(au, num_of_segments)
+        self.segments_len = [len(s) for s in self.segments]
 
         for idx, segment in enumerate(self.segments):
             self.__segment_event(segment, idx)
 
-        return tuple([len(e) for e in self.events.values()])
+        response = {}
+        for e in self.events:
+            intensities = [se['i'] for se in self.events[e]]
+            response[f"e{e}_i"] = np.mean(intensities) if intensities else 0
+            response[f"e{e}_a"] = len(intensities)
+        return response

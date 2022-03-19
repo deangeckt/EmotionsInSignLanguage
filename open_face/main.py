@@ -25,15 +25,13 @@ def extract_file(file_path, au_res):
 
         vid_id = os.path.basename(file_path).split('.')[0]
         events = AuEvents(au, vid_id)
-        e1, e2, e3 = events.process(np.array(df[au]))
-        # events.plot_events()
-
-        au_res[au]['e1'].append(e1)
-        au_res[au]['e2'].append(e2)
-        au_res[au]['e3'].append(e3)
+        events_resp = events.process(np.array(df[au]))
+        events.plot_events()
+        for event_key in events_resp:
+            au_res[au][event_key].append(events_resp[event_key])
 
 
-features = ['mean', 'std', 'e1', 'e2', 'e3']
+features = ['mean', 'std', 'e0_i', 'e1_i', 'e2_i', 'e0_a', 'e1_a', 'e2_a']
 df_features = ['label', 'au'].extend(features)
 result_df = pd.DataFrame(columns=df_features)
 
@@ -53,5 +51,4 @@ for label in res:
             res_obj[feature] = feature_mean
         result_df = result_df.append(res_obj, ignore_index=True)
 
-# print(result_df)
 result_df.to_csv('non_bin.csv')
