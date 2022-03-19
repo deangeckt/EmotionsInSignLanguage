@@ -4,6 +4,10 @@ import matplotlib.pyplot as plt
 au_list = ['AU01_r', 'AU02_r', 'AU04_r', 'AU05_r', 'AU06_r', 'AU07_r', 'AU09_r', 'AU10_r',
            'AU12_r', 'AU15_r', 'AU17_r', 'AU01_c', 'AU02_c', 'AU04_c', 'AU05_c', 'AU06_c', 'AU07_c',
            'AU09_c', 'AU10_c', 'AU12_c', 'AU14_c', 'AU15_c', 'AU17_c', 'AU28_c']
+au_fix_thresholds = {'AU01_r': 2, 'AU02_r': 2, 'AU04_r': 1.25, 'AU05_r': 2, 'AU06_r': 1.9,
+                     'AU07_r': 1.25, 'AU09_r': 2, 'AU10_r': 1.8, 'AU12_r': 2, 'AU15_r': 2,
+                     'AU17_r': 1.75
+                     }
 
 non_bin_aus = [au for au in au_list if au.endswith('r')]
 bin_aus = [au for au in au_list if au.endswith('c')]
@@ -21,7 +25,6 @@ class AuEvents:
             self.events[i] = []
 
         # Thresholds
-        self.au_th_fix = 2  # fixing the dynamic threshold
         self.min_wd = 4  # min num of frames above dy threshold
 
         # calculating during process
@@ -56,7 +59,7 @@ class AuEvents:
 
         for idx, v in enumerate(segment):
             frame_idx = idx + idx_offset
-            if v >= self.dy_au_th:
+            if v >= self.dy_au_th and v > 0:
                 if self.start_idx == -1:
                     self.start_idx = frame_idx
             else:
@@ -98,9 +101,9 @@ class AuEvents:
     def process(self, au: np.ndarray):
         self.au = au
         if self.is_bin_au:
-            return 0, 0, 0
+            return None
 
-        self.dy_au_th = np.mean(self.au) * self.au_th_fix
+        self.dy_au_th = np.mean(self.au) * au_fix_thresholds[self.au_id]
         self.segments = np.array_split(au, num_of_segments)
         self.segments_len = [len(s) for s in self.segments]
 
