@@ -74,6 +74,8 @@ docs/_build/
 # PyBuilder
 target/
 open_face/processed
+open_face/events_plots
+open_face/results.csv
 
 # Jupyter Notebook
 .ipynb_checkpoints

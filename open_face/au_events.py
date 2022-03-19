@@ -1,6 +1,3 @@
-import pandas as pd
-import os
-from collections import defaultdict
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -14,9 +11,8 @@ num_of_segments = 3
 
 
 class AuEvents:
-    def __init__(self, au_id, label, person):
-        self.label = label
-        self.person = person
+    def __init__(self, au_id, vid_id):
+        self.vid_id = vid_id
         self.au_id = au_id
 
         self.is_bin_au = au_id in bin_aus
@@ -60,6 +56,7 @@ class AuEvents:
     def plot_events(self):
         if self.is_bin_au:
             return
+        fig = plt.figure(figsize=(4, 5))
         all_events = [item for sublist in self.events.values() for item in sublist]
         st_idx = [m['s'] for m in all_events]
         en_idx = [m['e'] for m in all_events]
@@ -75,8 +72,12 @@ class AuEvents:
 
         plt.plot(self.au, label=self.au_id)
         plt.legend()
-        plt.title(f"{self.person}-{self.label}: {self.au_id}")
-        plt.show()
+        title = f"{self.vid_id}-{self.au_id}"
+        plt.title(title)
+
+        # plt.show()
+        plt.savefig(f"events_plots/{title}.png")
+        plt.close(fig)
 
     def process(self, au: np.ndarray):
         self.au = au
