@@ -54,4 +54,4 @@ for label in res:
             res_obj[feature] = feature_mean
         result_df = result_df.append(res_obj, ignore_index=True)
 
-result_df.to_csv('non_bin.csv')
+result_df.to_csv('results.csv')

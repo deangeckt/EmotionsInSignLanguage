@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -42,10 +43,10 @@ class AuEvents:
             return
 
         idx_offset = sum(self.segments_len[0:segment_idx])
-        in_seg_strat = self.start_idx - idx_offset
+        in_seg_start = self.start_idx - idx_offset
         in_seg_end = self.end_idx - idx_offset
 
-        intensity = np.mean(self.segments[segment_idx][in_seg_strat:in_seg_end])
+        intensity = np.mean(self.segments[segment_idx][in_seg_start:in_seg_end])
         self.events[segment_idx].append({'s': self.start_idx,
                                          'e': self.end_idx,
                                          'i': intensity})
@@ -72,7 +73,7 @@ class AuEvents:
             self.end_idx = len(segment) - 1 + idx_offset
             self.__add_event(segment_idx)
 
-    def plot_events(self):
+    def plot_events(self, save=False):
         if self.is_bin_au:
             return
         fig = plt.figure(figsize=(4, 5))
@@ -94,8 +95,11 @@ class AuEvents:
         title = f"{self.vid_id}-{self.au_id}"
         plt.title(title)
 
-        plt.show()
-        # plt.savefig(f"events_plots/{title}.png")
+        if save:
+            os.makedirs("events_plots", exist_ok=True)
+            plt.savefig(f"events_plots/{title}.png")
+        else:
+            plt.show()
         plt.close(fig)
 
     def process(self, au: np.ndarray):
