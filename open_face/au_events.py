@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 au_list = ['AU01_r', 'AU02_r', 'AU04_r', 'AU05_r', 'AU06_r', 'AU07_r', 'AU09_r', 'AU10_r',
            'AU12_r', 'AU15_r', 'AU17_r', 'AU01_c', 'AU02_c', 'AU04_c', 'AU05_c', 'AU06_c', 'AU07_c',
            'AU09_c', 'AU10_c', 'AU12_c', 'AU14_c', 'AU15_c', 'AU17_c', 'AU28_c']
-au_fix_thresholds = {'AU01_r': 2, 'AU02_r': 2, 'AU04_r': 1.25, 'AU05_r': 2, 'AU06_r': 1.9,
-                     'AU07_r': 1.25, 'AU09_r': 2, 'AU10_r': 1.8, 'AU12_r': 2, 'AU15_r': 2,
+au_fix_thresholds = {'AU01_r': 2, 'AU02_r': 2, 'AU04_r': 1.25, 'AU05_r': 2, 'AU06_r': 1.5,
+                     'AU07_r': 1.25, 'AU09_r': 2, 'AU10_r': 1.8, 'AU12_r': 1.5, 'AU15_r': 2,
                      'AU17_r': 1.75
                      }
 
