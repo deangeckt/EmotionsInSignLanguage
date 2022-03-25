@@ -28,7 +28,7 @@ def extract_file(file_path):
         vid_id = os.path.basename(file_path).split('.')[0]
         events = AuEvents(au, vid_id)
         events_resp = events.process(np.array(df[au]))
-        # events.plot_events()
+        events.plot_events()
         # TODO: imp binary au's and remove this
         if events_resp is None:
             continue

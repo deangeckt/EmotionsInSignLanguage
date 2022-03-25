@@ -90,6 +90,7 @@ class AuEvents:
         for en in en_idx:
             plt.axvline(x=en, color='red', ls='--')
 
+        plt.ylim(0, 5)
         plt.plot(self.au, label=self.au_id)
         plt.legend()
         title = f"{self.vid_id}-{self.au_id}"
