@@ -74,8 +74,6 @@ class AuEvents:
             self.__add_event(segment_idx)
 
     def plot_events(self, save=False):
-        if self.is_bin_au:
-            return
         fig = plt.figure(figsize=(4, 5))
         all_events = [item for sublist in self.events.values() for item in sublist]
         st_idx = [m['s'] for m in all_events]
@@ -90,7 +88,8 @@ class AuEvents:
         for en in en_idx:
             plt.axvline(x=en, color='red', ls='--')
 
-        plt.ylim(0, 5)
+        y_lim = 5 if self.is_bin_au else 5
+        plt.ylim(0, y_lim)
         plt.plot(self.au, label=self.au_id)
         plt.legend()
         title = f"{self.vid_id}-{self.au_id}"
@@ -103,12 +102,15 @@ class AuEvents:
             plt.show()
         plt.close(fig)
 
+    def __get_au_threshold(self):
+        if self.is_bin_au:
+            return 1
+        return np.mean(self.au) * au_fix_thresholds[self.au_id]
+
     def process(self, au: np.ndarray):
         self.au = au
-        if self.is_bin_au:
-            return None
 
-        self.dy_au_th = np.mean(self.au) * au_fix_thresholds[self.au_id]
+        self.dy_au_th = self.__get_au_threshold()
         self.segments = np.array_split(au, num_of_segments)
         self.segments_len = [len(s) for s in self.segments]
 
