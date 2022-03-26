@@ -1,5 +1,6 @@
 open_face/processed
-
+open_face/results
+open_face/events_plots
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
