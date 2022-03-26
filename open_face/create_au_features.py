@@ -36,7 +36,8 @@ def extract_file(file_path):
     return file_res
 
 
-features = ['mean', 'std', 'e0_i', 'e1_i', 'e2_i', 'e0_a', 'e1_a', 'e2_a']
+features = ['mean', 'std', 'e0_intensity', 'e1_intensity', 'e2_intensity',
+            'e0_amount', 'e1_amount', 'e2_amount']
 df_features = ['label', 'au'].extend(features)
 
 all_vid_res = defaultdict(lambda: defaultdict(lambda: default_au_features()))

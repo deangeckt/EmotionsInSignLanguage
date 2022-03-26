@@ -120,6 +120,6 @@ class AuEvents:
         response = {}
         for e in self.events:
             intensities = [se['i'] for se in self.events[e]]
-            response[f"e{e}_i"] = np.mean(intensities) if intensities else 0
-            response[f"e{e}_a"] = len(intensities)
+            response[f"e{e}_intensity"] = np.mean(intensities) if intensities else 0
+            response[f"e{e}_amount"] = len(intensities)
         return response
