@@ -46,7 +46,7 @@ class AuEvents:
         in_seg_start = self.start_idx - idx_offset
         in_seg_end = self.end_idx - idx_offset
 
-        intensity = np.mean(self.segments[segment_idx][in_seg_start:in_seg_end])
+        intensity = np.mean(self.segments[segment_idx][in_seg_start:in_seg_end]) * (in_seg_end-in_seg_start)
         self.events[segment_idx].append({'s': self.start_idx,
                                          'e': self.end_idx,
                                          'i': intensity})
@@ -74,7 +74,7 @@ class AuEvents:
             self.__add_event(segment_idx)
 
     def plot_events(self, save=False):
-        fig = plt.figure(figsize=(4, 5))
+        fig = plt.figure(figsize=(6, 5))
         all_events = [item for sublist in self.events.values() for item in sublist]
         st_idx = [m['s'] for m in all_events]
         en_idx = [m['e'] for m in all_events]
