@@ -80,6 +80,32 @@ def extract_file(file_path):
     return file_res
 
 
+def save_all_mean_results():
+    all_vid_res_df = pd.DataFrame(columns=df_features)
+    for label in all_vid_res:
+        for au in all_vid_res[label]:
+            res_obj = {'label': label, 'au': au}
+            for feature in features:
+                feature_mean = np.mean(np.array(all_vid_res[label][au][feature]))
+                res_obj[feature] = feature_mean
+            all_vid_res_df = all_vid_res_df.append(res_obj, ignore_index=True)
+
+    all_vid_res_df.to_csv('results/all_mean_results.csv')
+
+
+def save_per_file_res():
+    file_res_df = pd.DataFrame(columns=df_features)
+    for au in file_res:
+        res_obj = {'label': label, 'au': au}
+        for feature in features:
+            val = file_res[au].get(feature, 0)
+            all_vid_res[label][au][feature].append(val)
+            res_obj[feature] = val
+        file_res_df = file_res_df.append(res_obj, ignore_index=True)
+
+    file_res_df.to_csv(f'results/{file_name}')
+
+
 features = ['mean', 'std',
             'e0_length', 'e1_length', 'e2_length',
             'e0_intensity', 'e1_intensity', 'e2_intensity',
@@ -87,34 +113,25 @@ features = ['mean', 'std',
 df_features = ['label', 'au'].extend(features)
 
 all_vid_res = defaultdict(lambda: defaultdict(lambda: default_au_features()))
-per_vid_res = defaultdict(dict)
 os.makedirs("results", exist_ok=True)
+
+df_feature_vector = pd.DataFrame()
 
 for file_name in os.listdir(raw_data_path):
     print(file_name)
     label = file_name.split('_')[1]
     file_res = extract_file(os.path.join(raw_data_path, file_name))
 
-    per_vid_res_df = pd.DataFrame(columns=df_features)
+    # convert file_res to a feature vector
+    ml_feature_obj = {'label': label}
     for au in file_res:
-        res_obj = {'label': label, 'au': au}
-        for feature in features:
-            val = file_res[au].get(feature, 0)
-            all_vid_res[label][au][feature].append(val)
-            res_obj[feature] = val
-        per_vid_res_df = per_vid_res_df.append(res_obj, ignore_index=True)
+        for feature in file_res[au]:
+            ml_feature = f'{au}_{feature}'
+            ml_feature_obj[ml_feature] = file_res[au][feature]
+    df_feature_vector = df_feature_vector.append(ml_feature_obj, ignore_index=True)
 
-    # save result per video / file
-    per_vid_res_df.to_csv(f'results/{file_name}')
+    save_per_file_res()
 
+save_all_mean_results()
+df_feature_vector.to_csv('results/feature_vector.csv')
 
-all_vid_res_df = pd.DataFrame(columns=df_features)
-for label in all_vid_res:
-    for au in all_vid_res[label]:
-        res_obj = {'label': label, 'au': au}
-        for feature in features:
-            feature_mean = np.mean(np.array(all_vid_res[label][au][feature]))
-            res_obj[feature] = feature_mean
-        all_vid_res_df = all_vid_res_df.append(res_obj, ignore_index=True)
-
-all_vid_res_df.to_csv('results/all_results.csv')
