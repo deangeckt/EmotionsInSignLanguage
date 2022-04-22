@@ -28,13 +28,19 @@ def bin_sequence(bin_au):
     for idx, v in enumerate(bin_au):
         if v == 1:
             if len(start) == len(stop):
-                start.append(idx)
+                # edge case - one 1 at the end
+                if not (len(start) == 0 and idx == len(bin_au) - 1):
+                    start.append(idx)
             elif idx == len(bin_au) - 1:
                 stop.append(idx)
         if v == 0:
             if len(start) > len(stop):
                 end = idx if idx == len(bin_au) - 1 else idx - 1
-                stop.append(end)
+                # edge case - one 1 at the beginning
+                if len(start) and end == start[-1]:
+                    start.pop()
+                else:
+                    stop.append(end)
     return start, stop
 
 
@@ -75,7 +81,7 @@ def extract_file(file_path):
 
 
 features = ['mean', 'std',
-            'e0_length', 'e1_length', 'e2_length'
+            'e0_length', 'e1_length', 'e2_length',
             'e0_intensity', 'e1_intensity', 'e2_intensity',
             'e0_amount', 'e1_amount', 'e2_amount']
 df_features = ['label', 'au'].extend(features)
