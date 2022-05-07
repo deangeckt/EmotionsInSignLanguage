@@ -125,7 +125,7 @@ for file_name in os.listdir(raw_data_path):
     file_res = extract_file(os.path.join(raw_data_path, file_name))
 
     # convert file_res to a feature vector
-    ml_feature_obj = {'label': label, group: group}
+    ml_feature_obj = {'label': label, 'group': group}
     for au in file_res:
         for feature in file_res[au]:
             ml_feature = f'{au}_{feature}'
