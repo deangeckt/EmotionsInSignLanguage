@@ -3,7 +3,7 @@ import os
 from collections import defaultdict
 import numpy as np
 
-raw_data_path = 'raw_data/'
+raw_data_path = 'processed/'
 au_list = ['AU01_r', 'AU02_r', 'AU04_r', 'AU05_r', 'AU06_r', 'AU07_r', 'AU09_r', 'AU10_r',
            'AU12_r', 'AU15_r', 'AU17_r', 'AU01_c', 'AU02_c', 'AU04_c', 'AU05_c', 'AU06_c', 'AU07_c',
            'AU09_c', 'AU10_c', 'AU12_c', 'AU14_c', 'AU15_c', 'AU17_c', 'AU28_c']
@@ -118,10 +118,14 @@ os.makedirs("results", exist_ok=True)
 df_feature_vector = pd.DataFrame()
 
 for file_name in os.listdir(raw_data_path):
+    if not file_name.endswith('csv'):
+        continue
     print(file_name)
     split = file_name.split('_')
-    label = split[1]
-    group = split[3] if len(split) > 3 else 'none_hearing'
+    label = split[2]
+    if label == 'sadl':
+        label = 'sad'
+    group = split[3].split('.')[0]
     file_res = extract_file(os.path.join(raw_data_path, file_name))
 
     # convert file_res to a feature vector
