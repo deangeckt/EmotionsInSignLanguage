@@ -136,7 +136,7 @@ for file_name in os.listdir(raw_data_path):
             ml_feature_obj[ml_feature] = file_res[au][feature]
     df_feature_vector = df_feature_vector.append(ml_feature_obj, ignore_index=True)
 
-    save_per_file_res()
+    # save_per_file_res()
 
 save_all_mean_results()
 df_feature_vector.to_csv('results/feature_vector.csv')
