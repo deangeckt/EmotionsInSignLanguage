@@ -125,7 +125,10 @@ for file_name in os.listdir(raw_data_path):
     label = split[2]
     if label == 'sadl':
         label = 'sad'
-    group = split[3].split('.')[0]
+    if 'per' in split[0]:
+        group = split[3].split('.')[0]
+    else:
+        group = split[0][0]
     file_res = extract_file(os.path.join(raw_data_path, file_name))
 
     # convert file_res to a feature vector
