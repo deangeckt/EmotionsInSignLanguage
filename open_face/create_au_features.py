@@ -129,7 +129,8 @@ for file_name in os.listdir(raw_data_path):
         label = 'sad'
 
     if 'C' in split[0]:  # CODA group is either sign or speak
-        group = f'coda_{split[3]}'
+        coda_group = split[3].split('.')[0]
+        group = f'coda_{coda_group}'
     elif 'D' in split[0]:
         group = 'deaf'
     else:
@@ -147,5 +148,5 @@ for file_name in os.listdir(raw_data_path):
 
     # save_per_file_res()
 
-save_all_mean_results()
+# save_all_mean_results()
 df_feature_vector.to_csv('results/feature_vector.csv')
