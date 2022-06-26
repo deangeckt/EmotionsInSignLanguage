@@ -73,8 +73,10 @@ def extract_file(file_path):
                 events_intensity_.append(np.mean(au_signal[st:end]))
 
             event_key = f"e{idx}"
-            file_res[au_name][f"{event_key}_length"] = np.mean(np.array(events_len_)) if events_count_ else 0
-            file_res[au_name][f"{event_key}_intensity"] = np.mean(np.array(events_intensity_)) if events_count_ else 0
+            file_res[au_name][f"{event_key}_length"] = np.mean(
+                np.array(events_len_)) if events_count_ else 0
+            file_res[au_name][f"{event_key}_intensity"] = np.mean(
+                np.array(events_intensity_)) if events_count_ else 0
             file_res[au_name][f"{event_key}_amount"] = events_count_
 
     return file_res
@@ -125,10 +127,14 @@ for file_name in os.listdir(raw_data_path):
     label = split[2]
     if label == 'sadl':
         label = 'sad'
-    if 'per' in split[0]:
-        group = split[3].split('.')[0]
+
+    if 'C' in split[0]:  # CODA group is either sign or speak
+        group = f'coda_{split[3]}'
+    elif 'D' in split[0]:
+        group = 'deaf'
     else:
-        group = split[0][0]
+        group = 'hear'
+
     file_res = extract_file(os.path.join(raw_data_path, file_name))
 
     # convert file_res to a feature vector
@@ -143,4 +149,3 @@ for file_name in os.listdir(raw_data_path):
 
 save_all_mean_results()
 df_feature_vector.to_csv('results/feature_vector.csv')
-
