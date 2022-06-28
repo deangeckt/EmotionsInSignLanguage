@@ -133,6 +133,9 @@ for file_name in os.listdir(raw_data_path):
         group = f'coda_{coda_group}'
     elif 'D' in split[0]:
         group = 'deaf'
+        label = label.split('.')[0]
+        if label == 'sadl':
+            label = 'sad'
     else:
         group = 'hear'
 
