@@ -2,7 +2,7 @@ import subprocess
 import os
 
 video_path = "../../video"
-open_face_path = "C:/Users/t-deangeckt/Downloads/OpenFace_2.2.0_win_x64/OpenFace_2.2.0_win_x64"
+open_face_path = "C:/Users/t-deangeckt/Documents/dev/HU/chb_project/OpenFace_2.2.0_win_x64/OpenFace_2.2.0_win_x64"
 open_face_cmd = f"{open_face_path}/FeatureExtraction.exe"
 output_path = 'processed/'
 
