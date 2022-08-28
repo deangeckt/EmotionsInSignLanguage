@@ -129,8 +129,9 @@ for file_name in os.listdir(raw_data_path):
         label = 'sad'
 
     if 'C' in split[0]:  # CODA group is either sign or speak
-        coda_group = split[3].split('.')[0]
-        group = f'coda_{coda_group}'
+        # coda_group = split[3].split('.')[0]
+        # group = f'coda_{coda_group}'
+        group = 'coda'
     elif 'D' in split[0]:
         group = 'deaf'
         label = label.split('.')[0]
