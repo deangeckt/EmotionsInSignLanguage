@@ -122,35 +122,39 @@ df_feature_vector = pd.DataFrame()
 for file_name in os.listdir(raw_data_path):
     if not file_name.endswith('csv'):
         continue
-    print(file_name)
-    split = file_name.split('_')
-    label = split[2]
-    if label == 'sadl':
-        label = 'sad'
-
-    if 'C' in split[0]:  # CODA group is either sign or speak
-        coda_group = split[3].split('.')[0]
-        group = f'coda_{coda_group}'
-    elif 'D' in split[0]:
-        group = 'deaf'
-        label = label.split('.')[0]
+    # print(file_name)
+    try:
+        split = file_name.split('_')
+        label = split[2]
         if label == 'sadl':
             label = 'sad'
-    else:
-        group = 'hear'
 
-    print(f'l: {label}, g: {group}')
+        if 'C' in split[0]:  # CODA group is either sign or speak
+            coda_group = split[3].split('.')[0]
+            group = f'coda_{coda_group}'
+        elif 'D' in split[0]:
+            group = 'deaf'
+            label = label.split('.')[0]
+            if label == 'sadl':
+                label = 'sad'
+        else:
+            group = 'hear'
 
-    file_res = extract_file(os.path.join(raw_data_path, file_name))
+        # print(f'l: {label}, g: {group}')
 
-    # convert file_res to a feature vector
-    ml_feature_obj = {'label': label, 'group': group}
-    for au in file_res:
-        for feature in file_res[au]:
-            ml_feature = f'{au}_{feature}'
-            ml_feature_obj[ml_feature] = file_res[au][feature]
-    df_feature_vector = df_feature_vector.append(ml_feature_obj, ignore_index=True)
+        file_res = extract_file(os.path.join(raw_data_path, file_name))
 
+        # convert file_res to a feature vector
+        ml_feature_obj = {'label': label, 'group': group}
+        for au in file_res:
+            for feature in file_res[au]:
+                ml_feature = f'{au}_{feature}'
+                ml_feature_obj[ml_feature] = file_res[au][feature]
+        row = pd.DataFrame(ml_feature_obj, index=[0])
+        df_feature_vector = pd.concat([df_feature_vector, row], ignore_index=True)
+        # df_feature_vector = df_feature_vector.append(ml_feature_obj, ignore_index=True)
+    except IndexError:
+        print(file_name)
     # save_per_file_res()
 
 # save_all_mean_results()
